@@ -12,8 +12,14 @@ func Register(router *gin.Engine, db *gorm.DB) {
 	// Healthcheck
 	router.GET("/healthcheck", healthcheck)
 
-	router.Use(ErrorMiddleware)
-	router.Use(TransactionMiddleware(db))
+	api := router.Group("/api")
+	api.Use(ErrorMiddleware)
+	api.Use(TransactionMiddleware(db))
+
+	// Theaters
+	theaters := api.Group("/theaters")
+	theaters.GET("/", TheatersList)
+
 }
 
 func healthcheck(c *gin.Context) {
