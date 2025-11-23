@@ -22,7 +22,7 @@ func main() {
 func run() error {
 	slog.Info("Starting server")
 
-	db, err := database.Open()
+	db, err := database.OpenAndMigrate()
 	if err != nil {
 		return err
 	}
