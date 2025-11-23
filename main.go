@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/orgs/PRPO-skupina-02/Spored/api"
+	"github.com/orgs/PRPO-skupina-02/Spored/database"
 )
 
 func main() {
@@ -21,10 +22,16 @@ func main() {
 func run() error {
 	slog.Info("Starting server")
 
-	router := gin.Default()
-	api.Register(router)
+	db, err := database.Open()
+	if err != nil {
+		return err
+	}
 
-	err := router.Run(":8080")
+	router := gin.Default()
+	api.Register(router, db)
+
+	slog.Info("Server startup complete")
+	err = router.Run(":8080")
 	if err != nil {
 		return err
 	}
