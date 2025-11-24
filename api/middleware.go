@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	ut "github.com/go-playground/universal-translator"
 	"gorm.io/gorm"
 )
 
@@ -29,5 +30,13 @@ func ErrorMiddleware(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, map[string]any{
 			"error": c.Errors.Last().Err,
 		})
+	}
+}
+
+func TranslationMiddleware(trans ut.Translator) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		SetContextTranslation(c, trans)
+
+		c.Next()
 	}
 }

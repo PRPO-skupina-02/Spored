@@ -9,7 +9,7 @@ import (
 
 func Register(router *gin.Engine, db *gorm.DB) {
 
-	RegisterValidation()
+	trans := RegisterValidation()
 
 	// Healthcheck
 	router.GET("/healthcheck", healthcheck)
@@ -17,6 +17,7 @@ func Register(router *gin.Engine, db *gorm.DB) {
 	api := router.Group("/api")
 	api.Use(ErrorMiddleware)
 	api.Use(TransactionMiddleware(db))
+	api.Use(TranslationMiddleware(trans))
 
 	// Theaters
 	theaters := api.Group("/theaters")
