@@ -42,3 +42,31 @@ func TheatersList(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+type TheaterRequest struct {
+	Name string `json:"name" binding:"required,min=3"`
+}
+
+func TheatersCreate(c *gin.Context) {
+	tx := GetContextTransaction(c)
+
+	var req TheaterRequest
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		ValidationError(c, err)
+		return
+	}
+
+	theater := models.Theater{
+		UUID: uuid.New(),
+		Name: req.Name,
+	}
+	if err := tx.Create(&theater).Error; err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	response := newTheaterResponse(theater)
+
+	c.JSON(http.StatusOK, response)
+}

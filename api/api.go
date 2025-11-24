@@ -9,6 +9,8 @@ import (
 
 func Register(router *gin.Engine, db *gorm.DB) {
 
+	RegisterValidation()
+
 	// Healthcheck
 	router.GET("/healthcheck", healthcheck)
 
@@ -19,6 +21,7 @@ func Register(router *gin.Engine, db *gorm.DB) {
 	// Theaters
 	theaters := api.Group("/theaters")
 	theaters.GET("/", TheatersList)
+	theaters.POST("/", TheatersCreate)
 
 }
 
