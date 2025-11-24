@@ -102,6 +102,38 @@ paths:
       tags:
       - theaters
   /theaters/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete theater
+      operationId: TheatersDelete
+      parameters:
+      - description: Theater UUID
+        format: uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.HttpError'
+      summary: Delete theater
+      tags:
+      - theaters
     put:
       consumes:
       - application/json

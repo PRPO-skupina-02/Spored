@@ -37,6 +37,12 @@ func ErrorMiddleware(c *gin.Context) {
 
 	err := c.Errors.Last()
 
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		c.Errors = slices.Delete(c.Errors, len(c.Errors)-1, len(c.Errors))
+		c.JSON(http.StatusNotFound, NewNotFoundError())
+		return
+	}
+
 	var verr validator.ValidationErrors
 	if errors.As(err, &verr) {
 		c.Errors = slices.Delete(c.Errors, len(c.Errors)-1, len(c.Errors))

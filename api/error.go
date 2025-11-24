@@ -26,3 +26,10 @@ func NewValidationError(verr validator.ValidationErrors, trans ut.Translator) Ht
 		Fields:  fields,
 	}
 }
+
+func NewNotFoundError() HttpError {
+	return HttpError{
+		Code:    http.StatusNotFound,
+		Message: "Not found",
+	}
+}

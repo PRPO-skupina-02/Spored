@@ -36,6 +36,7 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	theaters.GET("/", TheatersList)
 	theaters.POST("/", TheatersCreate)
 	theaters.PUT("/:uuid", TheatersUpdate)
+	theaters.DELETE("/:uuid", TheatersDelete)
 
 }
 

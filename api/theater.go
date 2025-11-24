@@ -142,3 +142,41 @@ func TheatersUpdate(c *gin.Context) {
 
 	c.JSON(http.StatusOK, newTheaterResponse(theater))
 }
+
+// TheatersDelete
+//
+//	@Id				TheatersDelete
+//	@Summary		Delete theater
+//	@Description	Delete theater
+//	@Tags			theaters
+//	@Accept			json
+//	@Produce		json
+//	@Param			uuid	path	string	true	"Theater UUID"	Format(uuid)
+//	@Success		204
+//	@Failure		400	{object}	HttpError
+//	@Failure		404	{object}	HttpError
+//	@Failure		500	{object}	HttpError
+//	@Router			/theaters/{uuid} [delete]
+func TheatersDelete(c *gin.Context) {
+	tx := GetContextTransaction(c)
+	uuidParam, ok := getUUIDParam(c)
+	if !ok {
+		return
+	}
+
+	theater := models.Theater{
+		UUID: uuidParam,
+	}
+
+	if err := tx.Where(&theater).First(&theater).Error; err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if err := tx.Delete(&theater).Error; err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusNoContent, "")
+}
