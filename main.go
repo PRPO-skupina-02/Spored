@@ -6,9 +6,9 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/PRPO-skupina-02/common/config"
 	"github.com/gin-gonic/gin"
 	"github.com/orgs/PRPO-skupina-02/Spored/api"
-	"github.com/orgs/PRPO-skupina-02/Spored/common"
 	"github.com/orgs/PRPO-skupina-02/Spored/database"
 )
 
@@ -26,7 +26,7 @@ func run() error {
 
 	var logger *slog.Logger
 
-	logLevelConfig := common.GetEnvDefault("LOG_LEVEL", "INFO")
+	logLevelConfig := config.GetEnvDefault("LOG_LEVEL", "INFO")
 	var logLevel = new(slog.LevelVar)
 	switch logLevelConfig {
 	case "DEBUG":

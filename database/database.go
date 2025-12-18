@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/PRPO-skupina-02/common/config"
 	"github.com/golang-migrate/migrate/v4"
 	migratepostgres "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/lib/pq"
-	"github.com/orgs/PRPO-skupina-02/Spored/common"
 	gormpostgres "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -35,11 +35,11 @@ func OpenAndMigrate() (*gorm.DB, error) {
 
 func GetProdDSN() string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		common.GetEnv("POSTGRES_IP"),
-		common.GetEnv("POSTGRES_USERNAME"),
-		common.GetEnv("POSTGRES_PASSWORD"),
-		common.GetEnv("POSTGRES_DATABASE_NAME"),
-		common.GetEnv("POSTGRES_PORT"))
+		config.GetEnv("POSTGRES_IP"),
+		config.GetEnv("POSTGRES_USERNAME"),
+		config.GetEnv("POSTGRES_PASSWORD"),
+		config.GetEnv("POSTGRES_DATABASE_NAME"),
+		config.GetEnv("POSTGRES_PORT"))
 }
 
 func Open() (*gorm.DB, error) {
