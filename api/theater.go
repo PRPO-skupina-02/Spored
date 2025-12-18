@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/PRPO-skupina-02/common/middleware"
+	"github.com/PRPO-skupina-02/common/request"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/orgs/PRPO-skupina-02/Spored/models"
@@ -39,10 +41,10 @@ func newTheaterResponse(theater models.Theater) TheaterResponse {
 //	@Failure		500	{object}	HttpError
 //	@Router			/theaters [get]
 func TheatersList(c *gin.Context) {
-	tx := GetContextTransaction(c)
+	tx := middleware.GetContextTransaction(c)
 
-	var theaters []models.Theater
-	if err := tx.Find(&theaters).Error; err != nil {
+	theaters, err := models.GetTheaters(tx)
+	if err != nil {
 		_ = c.Error(err)
 		return
 	}
@@ -75,7 +77,7 @@ type TheaterRequest struct {
 //	@Failure		500		{object}	HttpError
 //	@Router			/theaters [post]
 func TheatersCreate(c *gin.Context) {
-	tx := GetContextTransaction(c)
+	tx := middleware.GetContextTransaction(c)
 
 	var req TheaterRequest
 	err := c.ShouldBindJSON(&req)
@@ -88,12 +90,14 @@ func TheatersCreate(c *gin.Context) {
 		UUID: uuid.New(),
 		Name: req.Name,
 	}
-	if err := tx.Create(&theater).Error; err != nil {
+
+	err = theater.Create(tx)
+	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	c.JSON(http.StatusOK, newTheaterResponse(theater))
+	c.JSON(http.StatusCreated, newTheaterResponse(theater))
 }
 
 // TheatersUpdate
@@ -112,30 +116,30 @@ func TheatersCreate(c *gin.Context) {
 //	@Failure		500		{object}	HttpError
 //	@Router			/theaters/{uuid} [put]
 func TheatersUpdate(c *gin.Context) {
-	tx := GetContextTransaction(c)
-	uuidParam, ok := getUUIDParam(c)
-	if !ok {
-		return
-	}
-
-	var req TheaterRequest
-	err := c.ShouldBindJSON(&req)
+	tx := middleware.GetContextTransaction(c)
+	uuidParam, err := request.GetUUIDParam(c, "uuid")
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	theater := models.Theater{
-		UUID: uuidParam,
+	var req TheaterRequest
+	err = c.ShouldBindJSON(&req)
+	if err != nil {
+		_ = c.Error(err)
+		return
 	}
-	if err := tx.Where(&theater).First(&theater).Error; err != nil {
+
+	theater, err := models.GetTheater(tx, uuidParam)
+	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
 	theater.Name = req.Name
 
-	if err := tx.Save(&theater).Error; err != nil {
+	err = theater.Save(tx)
+	if err != nil {
 		_ = c.Error(err)
 		return
 	}
@@ -158,22 +162,15 @@ func TheatersUpdate(c *gin.Context) {
 //	@Failure		500	{object}	HttpError
 //	@Router			/theaters/{uuid} [delete]
 func TheatersDelete(c *gin.Context) {
-	tx := GetContextTransaction(c)
-	uuidParam, ok := getUUIDParam(c)
-	if !ok {
-		return
-	}
-
-	theater := models.Theater{
-		UUID: uuidParam,
-	}
-
-	if err := tx.Where(&theater).First(&theater).Error; err != nil {
+	tx := middleware.GetContextTransaction(c)
+	uuidParam, err := request.GetUUIDParam(c, "uuid")
+	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	if err := tx.Delete(&theater).Error; err != nil {
+	err = models.DeleteTheater(tx, uuidParam)
+	if err != nil {
 		_ = c.Error(err)
 		return
 	}

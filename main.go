@@ -6,10 +6,12 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/PRPO-skupina-02/common/config"
+	"github.com/PRPO-skupina-02/common/database"
+	"github.com/PRPO-skupina-02/common/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/orgs/PRPO-skupina-02/Spored/api"
-	"github.com/orgs/PRPO-skupina-02/Spored/common"
-	"github.com/orgs/PRPO-skupina-02/Spored/database"
+	"github.com/orgs/PRPO-skupina-02/Spored/db"
 )
 
 func main() {
@@ -26,7 +28,7 @@ func run() error {
 
 	var logger *slog.Logger
 
-	logLevelConfig := common.GetEnvDefault("LOG_LEVEL", "INFO")
+	logLevelConfig := config.GetEnvDefault("LOG_LEVEL", "INFO")
 	var logLevel = new(slog.LevelVar)
 	switch logLevelConfig {
 	case "DEBUG":
@@ -43,12 +45,12 @@ func run() error {
 	logger = slog.New(logHandler)
 	slog.SetDefault(logger)
 
-	db, err := database.OpenAndMigrate()
+	db, err := database.OpenAndMigrateProd(db.MigrationsFS)
 	if err != nil {
 		return err
 	}
 
-	trans, err := api.RegisterValidation()
+	trans, err := validation.RegisterValidation()
 	if err != nil {
 		return err
 	}
