@@ -8,6 +8,7 @@ import (
 
 	"github.com/PRPO-skupina-02/common/config"
 	"github.com/PRPO-skupina-02/common/database"
+	"github.com/PRPO-skupina-02/common/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/orgs/PRPO-skupina-02/Spored/api"
 	"github.com/orgs/PRPO-skupina-02/Spored/db"
@@ -49,7 +50,7 @@ func run() error {
 		return err
 	}
 
-	trans, err := api.RegisterValidation()
+	trans, err := validation.RegisterValidation()
 	if err != nil {
 		return err
 	}

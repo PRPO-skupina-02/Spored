@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/PRPO-skupina-02/common/middleware"
+	"github.com/PRPO-skupina-02/common/request"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/orgs/PRPO-skupina-02/Spored/models"
@@ -116,13 +117,14 @@ func TheatersCreate(c *gin.Context) {
 //	@Router			/theaters/{uuid} [put]
 func TheatersUpdate(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
-	uuidParam, ok := getUUIDParam(c)
-	if !ok {
+	uuidParam, err := request.GetUUIDParam(c, "uuid")
+	if err != nil {
+		_ = c.Error(err)
 		return
 	}
 
 	var req TheaterRequest
-	err := c.ShouldBindJSON(&req)
+	err = c.ShouldBindJSON(&req)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -161,12 +163,13 @@ func TheatersUpdate(c *gin.Context) {
 //	@Router			/theaters/{uuid} [delete]
 func TheatersDelete(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
-	uuidParam, ok := getUUIDParam(c)
-	if !ok {
+	uuidParam, err := request.GetUUIDParam(c, "uuid")
+	if err != nil {
+		_ = c.Error(err)
 		return
 	}
 
-	err := models.DeleteTheater(tx, uuidParam)
+	err = models.DeleteTheater(tx, uuidParam)
 	if err != nil {
 		_ = c.Error(err)
 		return
