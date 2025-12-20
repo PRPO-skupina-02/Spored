@@ -54,6 +54,10 @@ paths:
         in: query
         name: offset
         type: integer
+      - description: Sort results
+        in: query
+        name: sort
+        type: string
       produces:
       - application/json
       responses:

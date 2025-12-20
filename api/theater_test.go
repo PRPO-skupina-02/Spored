@@ -31,6 +31,16 @@ func TestTheatersList(t *testing.T) {
 			status: http.StatusOK,
 			params: "?limit=1&offset=1",
 		},
+		{
+			name:   "ok-sort",
+			status: http.StatusOK,
+			params: "?sort=-updated_at",
+		},
+		{
+			name:   "ok-paginated-sort",
+			status: http.StatusOK,
+			params: "?limit=2&offset=1&sort=updated_at",
+		},
 	}
 
 	for _, testCase := range tests {

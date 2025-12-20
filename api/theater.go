@@ -35,8 +35,9 @@ func newTheaterResponse(theater models.Theater) TheaterResponse {
 //	@Tags			theaters
 //	@Accept			json
 //	@Produce		json
-//	@Param			limit	query		int	false	"Limit the number of responses"	Default(10)
-//	@Param			offset	query		int	false	"Offset the first response"		Default(0)
+//	@Param			limit	query		int		false	"Limit the number of responses"	Default(10)
+//	@Param			offset	query		int		false	"Offset the first response"		Default(0)
+//	@Param			sort	query		string	false	"Sort results"
 //	@Success		200		{object}	[]TheaterResponse
 //	@Failure		400		{object}	middleware.HttpError
 //	@Failure		404		{object}	middleware.HttpError
@@ -45,8 +46,9 @@ func newTheaterResponse(theater models.Theater) TheaterResponse {
 func TheatersList(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
 	offset, limit := request.GetNormalizedPaginationArgs(c)
+	sort := request.GetSortOptions(c)
 
-	theaters, total, err := models.GetTheaters(tx, offset, limit)
+	theaters, total, err := models.GetTheaters(tx, offset, limit, sort)
 	if err != nil {
 		_ = c.Error(err)
 		return

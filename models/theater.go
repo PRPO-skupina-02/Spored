@@ -30,10 +30,14 @@ func (t *Theater) Save(tx *gorm.DB) error {
 	return nil
 }
 
-func GetTheaters(tx *gorm.DB, offset, limit int) ([]Theater, int, error) {
+func GetTheaters(tx *gorm.DB, offset, limit int, sort *request.SortOptions) ([]Theater, int, error) {
 	var theaters []Theater
 
 	query := tx.Scopes(request.PaginateScope(offset, limit))
+
+	if sort != nil {
+		query = query.Scopes(request.SortScope(sort))
+	}
 
 	if err := query.Find(&theaters).Error; err != nil {
 		return nil, 0, err

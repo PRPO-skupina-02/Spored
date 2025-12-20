@@ -43,6 +43,12 @@ const docTemplate = `{
                         "description": "Offset the first response",
                         "name": "offset",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort results",
+                        "name": "sort",
+                        "in": "query"
                     }
                 ],
                 "responses": {
