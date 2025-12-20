@@ -116,17 +116,17 @@ paths:
       summary: Create theater
       tags:
       - theaters
-  /theaters/{uuid}:
+  /theaters/{id}:
     delete:
       consumes:
       - application/json
       description: Delete theater
       operationId: TheatersDelete
       parameters:
-      - description: Theater UUID
+      - description: Theater ID
         format: uuid
         in: path
-        name: uuid
+        name: id
         required: true
         type: string
       produces:
@@ -149,16 +149,50 @@ paths:
       summary: Delete theater
       tags:
       - theaters
+    get:
+      consumes:
+      - application/json
+      description: Show theater
+      operationId: TheatersShow
+      parameters:
+      - description: Theater ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.TheaterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Show theater
+      tags:
+      - theaters
     put:
       consumes:
       - application/json
       description: Update theater
       operationId: TheatersUpdate
       parameters:
-      - description: Theater UUID
+      - description: Theater ID
         format: uuid
         in: path
-        name: uuid
+        name: id
         required: true
         type: string
       - description: request body

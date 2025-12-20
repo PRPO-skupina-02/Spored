@@ -133,7 +133,57 @@ const docTemplate = `{
                 }
             }
         },
-        "/theaters/{uuid}": {
+        "/theaters/{id}": {
+            "get": {
+                "description": "Show theater",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "theaters"
+                ],
+                "summary": "Show theater",
+                "operationId": "TheatersShow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Theater ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.TheaterResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.HttpError"
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "Update theater",
                 "consumes": [
@@ -151,8 +201,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "format": "uuid",
-                        "description": "Theater UUID",
-                        "name": "uuid",
+                        "description": "Theater ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
@@ -210,8 +260,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "format": "uuid",
-                        "description": "Theater UUID",
-                        "name": "uuid",
+                        "description": "Theater ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }

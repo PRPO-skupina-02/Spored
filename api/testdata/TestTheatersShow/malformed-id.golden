@@ -1,0 +1,7 @@
+{
+  "code": 400,
+  "fields": {
+    "uuid": "uuid must be a valid UUID"
+  },
+  "message": "validation error"
+}
