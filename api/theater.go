@@ -35,15 +35,18 @@ func newTheaterResponse(theater models.Theater) TheaterResponse {
 //	@Tags			theaters
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{object}	[]TheaterResponse
-//	@Failure		400	{object}	HttpError
-//	@Failure		404	{object}	HttpError
-//	@Failure		500	{object}	HttpError
+//	@Param			limit	query		int	false	"Limit the number of responses"	Default(10)
+//	@Param			offset	query		int	false	"Offset the first response"		Default(0)
+//	@Success		200		{object}	[]TheaterResponse
+//	@Failure		400		{object}	middleware.HttpError
+//	@Failure		404		{object}	middleware.HttpError
+//	@Failure		500		{object}	middleware.HttpError
 //	@Router			/theaters [get]
 func TheatersList(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
+	offset, limit := request.GetNormalizedPaginationArgs(c)
 
-	theaters, err := models.GetTheaters(tx)
+	theaters, total, err := models.GetTheaters(tx, offset, limit)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -55,7 +58,7 @@ func TheatersList(c *gin.Context) {
 		response = append(response, newTheaterResponse(theater))
 	}
 
-	c.JSON(http.StatusOK, response)
+	request.RenderPaginatedResponse(c, response, total)
 }
 
 type TheaterRequest struct {
@@ -72,9 +75,9 @@ type TheaterRequest struct {
 //	@Produce		json
 //	@Param			request	body		TheaterRequest	true	"request body"
 //	@Success		200		{object}	TheaterResponse
-//	@Failure		400		{object}	HttpError
-//	@Failure		404		{object}	HttpError
-//	@Failure		500		{object}	HttpError
+//	@Failure		400		{object}	middleware.HttpError
+//	@Failure		404		{object}	middleware.HttpError
+//	@Failure		500		{object}	middleware.HttpError
 //	@Router			/theaters [post]
 func TheatersCreate(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
@@ -111,9 +114,9 @@ func TheatersCreate(c *gin.Context) {
 //	@Param			uuid	path		string			true	"Theater UUID"	Format(uuid)
 //	@Param			request	body		TheaterRequest	true	"request body"
 //	@Success		200		{object}	TheaterResponse
-//	@Failure		400		{object}	HttpError
-//	@Failure		404		{object}	HttpError
-//	@Failure		500		{object}	HttpError
+//	@Failure		400		{object}	middleware.HttpError
+//	@Failure		404		{object}	middleware.HttpError
+//	@Failure		500		{object}	middleware.HttpError
 //	@Router			/theaters/{uuid} [put]
 func TheatersUpdate(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
@@ -157,9 +160,9 @@ func TheatersUpdate(c *gin.Context) {
 //	@Produce		json
 //	@Param			uuid	path	string	true	"Theater UUID"	Format(uuid)
 //	@Success		204
-//	@Failure		400	{object}	HttpError
-//	@Failure		404	{object}	HttpError
-//	@Failure		500	{object}	HttpError
+//	@Failure		400	{object}	middleware.HttpError
+//	@Failure		404	{object}	middleware.HttpError
+//	@Failure		500	{object}	middleware.HttpError
 //	@Router			/theaters/{uuid} [delete]
 func TheatersDelete(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)

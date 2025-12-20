@@ -20,10 +20,16 @@ func TestTheatersList(t *testing.T) {
 	tests := []struct {
 		name   string
 		status int
+		params string
 	}{
 		{
 			name:   "ok",
 			status: http.StatusOK,
+		},
+		{
+			name:   "ok-paginated",
+			status: http.StatusOK,
+			params: "?limit=1&offset=1",
 		},
 	}
 
@@ -32,7 +38,7 @@ func TestTheatersList(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := "/api/v1/theaters"
+			targetURL := "/api/v1/theaters" + testCase.params
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()

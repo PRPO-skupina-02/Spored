@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	"github.com/PRPO-skupina-02/common/request"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -29,14 +30,21 @@ func (t *Theater) Save(tx *gorm.DB) error {
 	return nil
 }
 
-func GetTheaters(tx *gorm.DB) ([]Theater, error) {
+func GetTheaters(tx *gorm.DB, offset, limit int) ([]Theater, int, error) {
 	var theaters []Theater
 
-	if err := tx.Find(&theaters).Error; err != nil {
-		return nil, err
+	query := tx.Scopes(request.PaginateScope(offset, limit))
+
+	if err := query.Find(&theaters).Error; err != nil {
+		return nil, 0, err
 	}
 
-	return theaters, nil
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return theaters, int(total), nil
 }
 
 func GetTheater(tx *gorm.DB, id uuid.UUID) (Theater, error) {
