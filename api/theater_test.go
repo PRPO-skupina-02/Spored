@@ -250,3 +250,53 @@ func TestTheatersUpdate(t *testing.T) {
 		})
 	}
 }
+
+func TestTheatersDelete(t *testing.T) {
+	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
+	r := TestingRouter(t, db)
+
+	tests := []struct {
+		name   string
+		status int
+		id     string
+	}{
+		{
+			name:   "ok",
+			status: http.StatusNoContent,
+			id:     "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name:   "invalid-id",
+			status: http.StatusNotFound,
+			id:     "01234567-0123-0123-0123-0123456789ab",
+		},
+		{
+			name:   "nil-id",
+			status: http.StatusBadRequest,
+			id:     "00000000-0000-0000-0000-000000000000",
+		},
+		{
+			name:   "malformed-id",
+			status: http.StatusBadRequest,
+			id:     "000",
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			err := fixtures.Load()
+			assert.NoError(t, err)
+
+			targetURL := fmt.Sprintf("/api/v1/theaters/%s", testCase.id)
+
+			req := xtesting.NewTestingRequest(t, targetURL, http.MethodDelete, nil)
+			w := httptest.NewRecorder()
+
+			r.ServeHTTP(w, req)
+
+			assert.Equal(t, testCase.status, w.Code)
+			xtesting.AssertGoldenJSON(t, w)
+			xtesting.AssertGoldenDatabaseTable(t, db, []models.Theater{}, nil)
+		})
+	}
+}
