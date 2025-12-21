@@ -114,7 +114,7 @@ func TestTheatersCreate(t *testing.T) {
 
 			assert.Equal(t, testCase.status, w.Code)
 			xtesting.AssertGoldenJSON(t, w, ignoreResp)
-			xtesting.AssertGoldenDatabaseTable(t, db, []models.Theater{}, ignoreTheaters)
+			xtesting.AssertGoldenDatabaseTable(t, db.Order("name"), []models.Theater{}, ignoreTheaters)
 		})
 	}
 }

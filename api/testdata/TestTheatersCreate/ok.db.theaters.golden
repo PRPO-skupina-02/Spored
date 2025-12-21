@@ -1,26 +1,26 @@
 [
-  {
-    "CreatedAt": "-- Dynamic value --",
-    "ID": "-- Dynamic value --",
-    "Name": "Theater1",
-    "UpdatedAt": "-- Dynamic value --"
-  },
-  {
-    "CreatedAt": "-- Dynamic value --",
-    "ID": "-- Dynamic value --",
-    "Name": "TestTheater",
-    "UpdatedAt": "-- Dynamic value --"
-  },
-  {
-    "CreatedAt": "-- Dynamic value --",
-    "ID": "-- Dynamic value --",
-    "Name": "Theater3",
-    "UpdatedAt": "-- Dynamic value --"
-  },
-  {
-    "CreatedAt": "-- Dynamic value --",
-    "ID": "-- Dynamic value --",
-    "Name": "Theater2",
-    "UpdatedAt": "-- Dynamic value --"
-  }
+	{
+		"ID": "-- Dynamic value --",
+		"CreatedAt": "-- Dynamic value --",
+		"UpdatedAt": "-- Dynamic value --",
+		"Name": "TestTheater"
+	},
+	{
+		"ID": "-- Dynamic value --",
+		"CreatedAt": "-- Dynamic value --",
+		"UpdatedAt": "-- Dynamic value --",
+		"Name": "Theater1"
+	},
+	{
+		"ID": "-- Dynamic value --",
+		"CreatedAt": "-- Dynamic value --",
+		"UpdatedAt": "-- Dynamic value --",
+		"Name": "Theater2"
+	},
+	{
+		"ID": "-- Dynamic value --",
+		"CreatedAt": "-- Dynamic value --",
+		"UpdatedAt": "-- Dynamic value --",
+		"Name": "Theater3"
+	}
 ]

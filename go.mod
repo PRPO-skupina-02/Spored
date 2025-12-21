@@ -4,11 +4,10 @@ go 1.25.1
 
 require github.com/stretchr/testify v1.11.1
 
-require github.com/PRPO-skupina-02/common v0.1.1
+require github.com/PRPO-skupina-02/common v0.1.0
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
-	github.com/Jeffail/gabs/v2 v2.7.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.3.0 // indirect

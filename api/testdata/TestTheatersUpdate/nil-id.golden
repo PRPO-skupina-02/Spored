@@ -1,7 +1,7 @@
 {
-  "code": 400,
-  "fields": {
-    "uuid": "uuid must not be a nil uuid!"
-  },
-  "message": "validation error"
+	"code": 400,
+	"message": "validation error",
+	"fields": {
+		"uuid": "uuid must not be a nil uuid!"
+	}
 }
