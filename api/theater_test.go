@@ -167,3 +167,86 @@ func TestTheatersShow(t *testing.T) {
 		})
 	}
 }
+
+func TestTheatersUpdate(t *testing.T) {
+	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
+	r := TestingRouter(t, db)
+
+	tests := []struct {
+		name   string
+		body   TheaterRequest
+		status int
+		id     string
+	}{
+		{
+			name: "ok",
+			body: TheaterRequest{
+				Name: "NewTheater",
+			},
+			status: http.StatusOK,
+			id:     "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "short-name",
+			body: TheaterRequest{
+				Name: "A",
+			},
+			status: http.StatusBadRequest,
+			id:     "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name:   "no-body",
+			status: http.StatusBadRequest,
+			id:     "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "invalid-id",
+			body: TheaterRequest{
+				Name: "NewTheater",
+			},
+			status: http.StatusNotFound,
+			id:     "01234567-0123-0123-0123-0123456789ab",
+		},
+		{
+			name: "nil-id",
+			body: TheaterRequest{
+				Name: "NewTheater",
+			},
+			status: http.StatusBadRequest,
+			id:     "00000000-0000-0000-0000-000000000000",
+		},
+		{
+			name: "malformed-id",
+			body: TheaterRequest{
+				Name: "NewTheater",
+			},
+			status: http.StatusBadRequest,
+			id:     "000",
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			err := fixtures.Load()
+			assert.NoError(t, err)
+
+			targetURL := fmt.Sprintf("/api/v1/theaters/%s", testCase.id)
+
+			req := xtesting.NewTestingRequest(t, targetURL, http.MethodPut, testCase.body)
+			assert.NoError(t, err)
+			w := httptest.NewRecorder()
+
+			r.ServeHTTP(w, req)
+
+			ignoreResp := xtesting.ValuesCheckers{
+				"updated_at": xtesting.ValueTimeInPastDuration(time.Second),
+			}
+
+			ignoreTheaters := xtesting.GenerateValueCheckersForArrays(map[string]xtesting.ValueChecker{"UpdatedAt": xtesting.ValueTime()}, 10)
+
+			assert.Equal(t, testCase.status, w.Code)
+			xtesting.AssertGoldenJSON(t, w, ignoreResp)
+			xtesting.AssertGoldenDatabaseTable(t, db, []models.Theater{}, ignoreTheaters)
+		})
+	}
+}
