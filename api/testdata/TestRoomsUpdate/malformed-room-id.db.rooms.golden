@@ -1,7 +1,7 @@
 [
 	{
 		"ID": "925c2358-df46-11f0-a38e-abe580bde3d1",
-		"CreatedAt": "2025-11-30T23:59:59+01:00",
+		"CreatedAt": "2025-11-30T23:59:59Z",
 		"UpdatedAt": "-- Dynamic value --",
 		"Name": "Theater1 Room1",
 		"Rows": 10,
@@ -10,7 +10,7 @@
 	},
 	{
 		"ID": "e0722c3a-df42-11f0-9579-3734395be62a",
-		"CreatedAt": "2025-11-30T23:59:59+01:00",
+		"CreatedAt": "2025-11-30T23:59:59Z",
 		"UpdatedAt": "-- Dynamic value --",
 		"Name": "Theater1 Room2",
 		"Rows": 20,
@@ -19,7 +19,7 @@
 	},
 	{
 		"ID": "e0a55f7e-df42-11f0-b791-874135af3470",
-		"CreatedAt": "2025-11-30T23:59:59+01:00",
+		"CreatedAt": "2025-11-30T23:59:59Z",
 		"UpdatedAt": "-- Dynamic value --",
 		"Name": "Theater1 Room3",
 		"Rows": 3,
@@ -28,7 +28,7 @@
 	},
 	{
 		"ID": "ec19b8aa-df42-11f0-9018-53ba2f5e5e7c",
-		"CreatedAt": "2025-11-30T23:59:59+01:00",
+		"CreatedAt": "2025-11-30T23:59:59Z",
 		"UpdatedAt": "-- Dynamic value --",
 		"Name": "Theater2 Room1",
 		"Rows": 20,
