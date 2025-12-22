@@ -1,6 +1,7 @@
 package api
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/PRPO-skupina-02/common/middleware"
@@ -15,6 +16,8 @@ type RoomResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Name      string    `json:"name"`
+	Rows      int       `json:"rows"`
+	Columns   int       `json:"columns"`
 }
 
 func newRoomResponse(room models.Room) RoomResponse {
@@ -29,30 +32,31 @@ func newRoomResponse(room models.Room) RoomResponse {
 // RoomsList
 //
 //	@Id				RoomsList
-//	@Summary		List theater rooms
-//	@Description	List theater rooms
+//	@Summary		List rooms
+//	@Description	List rooms
 //	@Tags			rooms
 //	@Accept			json
 //	@Produce		json
-//	@Param			limit	query		int		false	"Limit the number of responses"	Default(10)
-//	@Param			offset	query		int		false	"Offset the first response"		Default(0)
-//	@Param			sort	query		string	false	"Sort results"
-//	@Success		200		{object}	[]RoomResponse
-//	@Failure		400		{object}	middleware.HttpError
-//	@Failure		404		{object}	middleware.HttpError
-//	@Failure		500		{object}	middleware.HttpError
-//	@Router			/theaters/:theaterID/rooms [get]
+//	@Param			theaterID	path		string	true	"Theater ID"					Format(uuid)
+//	@Param			limit		query		int		false	"Limit the number of responses"	Default(10)
+//	@Param			offset		query		int		false	"Offset the first response"		Default(0)
+//	@Param			sort		query		string	false	"Sort results"
+//	@Success		200			{object}	[]RoomResponse
+//	@Failure		400			{object}	middleware.HttpError
+//	@Failure		404			{object}	middleware.HttpError
+//	@Failure		500			{object}	middleware.HttpError
+//	@Router			/theaters/{theaterID}/rooms [get]
 func RoomsList(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
 	offset, limit := request.GetNormalizedPaginationArgs(c)
 	sort := request.GetSortOptions(c)
-	theaterID, err := request.GetUUIDParam(c, "theaterID")
+	roomID, err := request.GetUUIDParam(c, "roomID")
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	rooms, total, err := models.GetTheaterRooms(tx, theaterID, offset, limit, sort)
+	rooms, total, err := models.GetTheaterRooms(tx, roomID, offset, limit, sort)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -65,4 +69,166 @@ func RoomsList(c *gin.Context) {
 	}
 
 	request.RenderPaginatedResponse(c, response, total)
+}
+
+type RoomRequest struct {
+	Name    string `json:"name" binding:"required,min=3"`
+	Rows    int    `json:"rows" binding:"required,min=1,max=100"`
+	Columns int    `json:"columns" binding:"required,min=1,max=100"`
+}
+
+// RoomsCreate
+//
+//	@Id				RoomsCreate
+//	@Summary		Create room
+//	@Description	Create room
+//	@Tags			rooms
+//	@Accept			json
+//	@Produce		json
+//	@Param			theaterID	path		string		true	"Theater ID"	Format(uuid)
+//	@Param			request		body		RoomRequest	true	"request body"
+//	@Success		200			{object}	RoomResponse
+//	@Failure		400			{object}	middleware.HttpError
+//	@Failure		404			{object}	middleware.HttpError
+//	@Failure		500			{object}	middleware.HttpError
+//	@Router			/theaters/{theaterID}/rooms [post]
+func RoomsCreate(c *gin.Context) {
+	tx := middleware.GetContextTransaction(c)
+
+	var req RoomRequest
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	room := models.Room{
+		// TODO: TheaterID
+		ID:      uuid.New(),
+		Name:    req.Name,
+		Rows:    req.Rows,
+		Columns: req.Columns,
+	}
+
+	err = room.Create(tx)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, newRoomResponse(room))
+}
+
+// RoomsShow
+//
+//	@Id				RoomsShow
+//	@Summary		Show room
+//	@Description	Show room
+//	@Tags			rooms
+//	@Accept			json
+//	@Produce		json
+//	@Param			theaterID	path		string	true	"Theater ID"	Format(uuid)
+//	@Param			roomID		path		string	true	"Room ID"		Format(uuid)
+//	@Success		200			{object}	RoomResponse
+//	@Failure		400			{object}	middleware.HttpError
+//	@Failure		404			{object}	middleware.HttpError
+//	@Failure		500			{object}	middleware.HttpError
+//	@Router			/theaters/{theaterID}/rooms/{roomID} [get]
+func RoomsShow(c *gin.Context) {
+	tx := middleware.GetContextTransaction(c)
+	id, err := request.GetUUIDParam(c, "roomID")
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	room, err := models.GetRoom(tx, id)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, newRoomResponse(room))
+}
+
+// RoomsUpdate
+//
+//	@Id				RoomsUpdate
+//	@Summary		Update room
+//	@Description	Update room
+//	@Tags			rooms
+//	@Accept			json
+//	@Produce		json
+//	@Param			theaterID	path		string		true	"Theater ID"	Format(uuid)
+//	@Param			roomID		path		string		true	"Room ID"		Format(uuid)
+//	@Param			request		body		RoomRequest	true	"request body"
+//	@Success		200			{object}	RoomResponse
+//	@Failure		400			{object}	middleware.HttpError
+//	@Failure		404			{object}	middleware.HttpError
+//	@Failure		500			{object}	middleware.HttpError
+//	@Router			/theaters/{theaterID}/rooms/{roomID} [put]
+func RoomsUpdate(c *gin.Context) {
+	tx := middleware.GetContextTransaction(c)
+	id, err := request.GetUUIDParam(c, "roomID")
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	var req RoomRequest
+	err = c.ShouldBindJSON(&req)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	room, err := models.GetRoom(tx, id)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	room.Name = req.Name
+	room.Rows = req.Rows
+	room.Columns = req.Columns
+
+	err = room.Save(tx)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, newRoomResponse(room))
+}
+
+// RoomsDelete
+//
+//	@Id				RoomsDelete
+//	@Summary		Delete room
+//	@Description	Delete room
+//	@Tags			rooms
+//	@Accept			json
+//	@Produce		json
+//	@Param			theaterID	path	string	true	"Theater ID"	Format(uuid)
+//	@Param			roomID		path	string	true	"Room ID"		Format(uuid)
+//	@Success		204
+//	@Failure		400	{object}	middleware.HttpError
+//	@Failure		404	{object}	middleware.HttpError
+//	@Failure		500	{object}	middleware.HttpError
+//	@Router			/theaters/{theaterID}/rooms/{roomID} [delete]
+func RoomsDelete(c *gin.Context) {
+	tx := middleware.GetContextTransaction(c)
+	id, err := request.GetUUIDParam(c, "roomID")
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	err = models.DeleteRoom(tx, id)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusNoContent, "")
 }

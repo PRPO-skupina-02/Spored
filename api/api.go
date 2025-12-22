@@ -42,6 +42,10 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 
 	// Rooms
 	theaters.GET("/:theaterID/rooms", RoomsList)
+	theaters.GET("/:theaterID/rooms/:roomID", TheatersShow)
+	theaters.POST("/:theaterID/rooms", TheatersCreate)
+	theaters.PUT("/:theaterID/rooms/:roomID", TheatersUpdate)
+	theaters.DELETE("/:theaterID/rooms/:roomID", TheatersDelete)
 
 }
 
