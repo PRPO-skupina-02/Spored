@@ -173,11 +173,11 @@ func TestRoomsCreate(t *testing.T) {
 				"updated_at": xtesting.ValueTimeInPastDuration(time.Second),
 			}
 
-			ignoreTheaters := xtesting.GenerateValueCheckersForArrays(map[string]xtesting.ValueChecker{"ID": xtesting.ValueUUID(), "CreatedAt": xtesting.ValueTime(), "UpdatedAt": xtesting.ValueTime()}, 10)
+			ignoreRooms := xtesting.GenerateValueCheckersForArrays(map[string]xtesting.ValueChecker{"ID": xtesting.ValueUUID(), "CreatedAt": xtesting.ValueTime(), "UpdatedAt": xtesting.ValueTime()}, 10)
 
 			assert.Equal(t, testCase.status, w.Code)
 			xtesting.AssertGoldenJSON(t, w, ignoreResp)
-			xtesting.AssertGoldenDatabaseTable(t, db.Order("name"), []models.Theater{}, ignoreTheaters)
+			xtesting.AssertGoldenDatabaseTable(t, db.Order("name"), []models.Room{}, ignoreRooms)
 		})
 	}
 }
@@ -256,6 +256,150 @@ func TestRoomsShow(t *testing.T) {
 
 			assert.Equal(t, testCase.status, w.Code)
 			xtesting.AssertGoldenJSON(t, w)
+		})
+	}
+}
+
+func TestRoomsUpdate(t *testing.T) {
+	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
+	r := TestingRouter(t, db)
+
+	tests := []struct {
+		name      string
+		body      RoomRequest
+		status    int
+		roomID    string
+		theaterID string
+	}{
+		{
+			name: "ok",
+			body: RoomRequest{
+				Name:    "UpdatedRoom",
+				Rows:    12,
+				Columns: 24,
+			},
+			status:    http.StatusOK,
+			roomID:    "ec19b8aa-df42-11f0-9018-53ba2f5e5e7c",
+			theaterID: "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "validation-errors",
+			body: RoomRequest{
+				Name:    "A",
+				Rows:    -1,
+				Columns: 1000,
+			},
+			status:    http.StatusBadRequest,
+			roomID:    "ec19b8aa-df42-11f0-9018-53ba2f5e5e7c",
+			theaterID: "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name:      "no-body",
+			status:    http.StatusBadRequest,
+			roomID:    "ec19b8aa-df42-11f0-9018-53ba2f5e5e7c",
+			theaterID: "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "room-from-different-theater",
+			body: RoomRequest{
+				Name:    "UpdatedRoom",
+				Rows:    12,
+				Columns: 24,
+			},
+			status:    http.StatusNotFound,
+			roomID:    "e0722c3a-df42-11f0-9579-3734395be62a",
+			theaterID: "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "invalid-room-id",
+			body: RoomRequest{
+				Name:    "UpdatedRoom",
+				Rows:    12,
+				Columns: 24,
+			},
+			status:    http.StatusNotFound,
+			roomID:    "01234567-0123-0123-0123-0123456789ab",
+			theaterID: "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "nil-room-id",
+			body: RoomRequest{
+				Name:    "UpdatedRoom",
+				Rows:    12,
+				Columns: 24,
+			},
+			status:    http.StatusBadRequest,
+			roomID:    "00000000-0000-0000-0000-000000000000",
+			theaterID: "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "malformed-room-id",
+			body: RoomRequest{
+				Name:    "UpdatedRoom",
+				Rows:    12,
+				Columns: 24,
+			},
+			status:    http.StatusBadRequest,
+			roomID:    "000",
+			theaterID: "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "invalid-theater-id",
+			body: RoomRequest{
+				Name:    "UpdatedRoom",
+				Rows:    12,
+				Columns: 24,
+			},
+			status:    http.StatusNotFound,
+			roomID:    "ec19b8aa-df42-11f0-9018-53ba2f5e5e7c",
+			theaterID: "01234567-0123-0123-0123-0123456789ab",
+		},
+		{
+			name: "nil-theater-id",
+			body: RoomRequest{
+				Name:    "UpdatedRoom",
+				Rows:    12,
+				Columns: 24,
+			},
+			status:    http.StatusBadRequest,
+			roomID:    "ec19b8aa-df42-11f0-9018-53ba2f5e5e7c",
+			theaterID: "00000000-0000-0000-0000-000000000000",
+		},
+		{
+			name: "malformed-theater-id",
+			body: RoomRequest{
+				Name:    "UpdatedRoom",
+				Rows:    12,
+				Columns: 24,
+			},
+			status:    http.StatusBadRequest,
+			roomID:    "ec19b8aa-df42-11f0-9018-53ba2f5e5e7c",
+			theaterID: "000",
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			err := fixtures.Load()
+			assert.NoError(t, err)
+
+			targetURL := fmt.Sprintf("/api/v1/theaters/%s/rooms/%s", testCase.theaterID, testCase.roomID)
+
+			req := xtesting.NewTestingRequest(t, targetURL, http.MethodPut, testCase.body)
+			assert.NoError(t, err)
+			w := httptest.NewRecorder()
+
+			r.ServeHTTP(w, req)
+
+			ignoreResp := xtesting.ValuesCheckers{
+				"updated_at": xtesting.ValueTimeInPastDuration(time.Second),
+			}
+
+			ignoreRooms := xtesting.GenerateValueCheckersForArrays(map[string]xtesting.ValueChecker{"UpdatedAt": xtesting.ValueTime()}, 10)
+
+			assert.Equal(t, testCase.status, w.Code)
+			xtesting.AssertGoldenJSON(t, w, ignoreResp)
+			xtesting.AssertGoldenDatabaseTable(t, db, []models.Room{}, ignoreRooms)
 		})
 	}
 }
