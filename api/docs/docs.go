@@ -133,7 +133,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/theaters/{id}": {
+        "/theaters/{theaterID}": {
             "get": {
                 "description": "Show theater",
                 "consumes": [
@@ -152,7 +152,7 @@ const docTemplate = `{
                         "type": "string",
                         "format": "uuid",
                         "description": "Theater ID",
-                        "name": "id",
+                        "name": "theaterID",
                         "in": "path",
                         "required": true
                     }
@@ -202,7 +202,7 @@ const docTemplate = `{
                         "type": "string",
                         "format": "uuid",
                         "description": "Theater ID",
-                        "name": "id",
+                        "name": "theaterID",
                         "in": "path",
                         "required": true
                     },
@@ -261,7 +261,7 @@ const docTemplate = `{
                         "type": "string",
                         "format": "uuid",
                         "description": "Theater ID",
-                        "name": "id",
+                        "name": "theaterID",
                         "in": "path",
                         "required": true
                     }

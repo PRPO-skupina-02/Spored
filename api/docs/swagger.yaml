@@ -116,7 +116,7 @@ paths:
       summary: Create theater
       tags:
       - theaters
-  /theaters/{id}:
+  /theaters/{theaterID}:
     delete:
       consumes:
       - application/json
@@ -126,7 +126,7 @@ paths:
       - description: Theater ID
         format: uuid
         in: path
-        name: id
+        name: theaterID
         required: true
         type: string
       produces:
@@ -158,7 +158,7 @@ paths:
       - description: Theater ID
         format: uuid
         in: path
-        name: id
+        name: theaterID
         required: true
         type: string
       produces:
@@ -192,7 +192,7 @@ paths:
       - description: Theater ID
         format: uuid
         in: path
-        name: id
+        name: theaterID
         required: true
         type: string
       - description: request body

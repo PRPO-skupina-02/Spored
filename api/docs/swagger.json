@@ -127,7 +127,7 @@
                 }
             }
         },
-        "/theaters/{id}": {
+        "/theaters/{theaterID}": {
             "get": {
                 "description": "Show theater",
                 "consumes": [
@@ -146,7 +146,7 @@
                         "type": "string",
                         "format": "uuid",
                         "description": "Theater ID",
-                        "name": "id",
+                        "name": "theaterID",
                         "in": "path",
                         "required": true
                     }
@@ -196,7 +196,7 @@
                         "type": "string",
                         "format": "uuid",
                         "description": "Theater ID",
-                        "name": "id",
+                        "name": "theaterID",
                         "in": "path",
                         "required": true
                     },
@@ -255,7 +255,7 @@
                         "type": "string",
                         "format": "uuid",
                         "description": "Theater ID",
-                        "name": "id",
+                        "name": "theaterID",
                         "in": "path",
                         "required": true
                     }
