@@ -4,13 +4,17 @@
 			"id": "e0722c3a-df42-11f0-9579-3734395be62a",
 			"created_at": "2025-11-30T23:59:59+01:00",
 			"updated_at": "2025-11-30T23:59:59+01:00",
-			"name": "Theater1 Room2"
+			"name": "Theater1 Room2",
+			"rows": 20,
+			"columns": 30
 		},
 		{
 			"id": "e0a55f7e-df42-11f0-b791-874135af3470",
 			"created_at": "2025-11-30T23:59:59+01:00",
 			"updated_at": "2025-11-30T23:59:59+01:00",
-			"name": "Theater1 Room3"
+			"name": "Theater1 Room3",
+			"rows": 3,
+			"columns": 5
 		}
 	],
 	"offset": 2,

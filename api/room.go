@@ -26,6 +26,8 @@ func newRoomResponse(room models.Room) RoomResponse {
 		CreatedAt: room.CreatedAt,
 		UpdatedAt: room.UpdatedAt,
 		Name:      room.Name,
+		Rows:      room.Rows,
+		Columns:   room.Columns,
 	}
 }
 
@@ -50,7 +52,7 @@ func RoomsList(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
 	offset, limit := request.GetNormalizedPaginationArgs(c)
 	sort := request.GetSortOptions(c)
-	roomID, err := request.GetUUIDParam(c, "roomID")
+	roomID, err := request.GetUUIDParam(c, "theaterID")
 	if err != nil {
 		_ = c.Error(err)
 		return

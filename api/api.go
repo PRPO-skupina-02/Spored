@@ -34,18 +34,22 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 
 	// Theaters
 	theaters := v1.Group("/theaters")
+	theatersRestricted := theaters.Group("")
+	theatersRestricted.Use(TheaterPermissionsMiddleware)
+
 	theaters.GET("", TheatersList)
 	theaters.GET("/:theaterID", TheatersShow)
 	theaters.POST("", TheatersCreate)
-	theaters.PUT("/:theaterID", TheatersUpdate)
-	theaters.DELETE("/:theaterID", TheatersDelete)
+
+	theatersRestricted.PUT("/:theaterID", TheatersUpdate)
+	theatersRestricted.DELETE("/:theaterID", TheatersDelete)
 
 	// Rooms
 	theaters.GET("/:theaterID/rooms", RoomsList)
-	theaters.GET("/:theaterID/rooms/:roomID", TheatersShow)
-	theaters.POST("/:theaterID/rooms", TheatersCreate)
-	theaters.PUT("/:theaterID/rooms/:roomID", TheatersUpdate)
-	theaters.DELETE("/:theaterID/rooms/:roomID", TheatersDelete)
+	theaters.GET("/:theaterID/rooms/:roomID", RoomsShow)
+	theatersRestricted.POST("/:theaterID/rooms", RoomsCreate)
+	theatersRestricted.PUT("/:theaterID/rooms/:roomID", RoomsUpdate)
+	theatersRestricted.DELETE("/:theaterID/rooms/:roomID", RoomsDelete)
 
 }
 
