@@ -1,0 +1,13 @@
+{
+	"data": [
+		{
+			"id": "e0722c3a-df42-11f0-9579-3734395be62a",
+			"created_at": "2025-11-30T23:59:59+01:00",
+			"updated_at": "2025-11-30T23:59:59+01:00",
+			"name": "Theater1 Room2"
+		}
+	],
+	"offset": 1,
+	"limit": 1,
+	"total": 3
+}

@@ -1,5 +1,16 @@
 basePath: /api/v1
 definitions:
+  api.RoomResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   api.TheaterRequest:
     properties:
       name:
@@ -116,6 +127,51 @@ paths:
       summary: Create theater
       tags:
       - theaters
+  /theaters/:theaterID/rooms:
+    get:
+      consumes:
+      - application/json
+      description: List theater rooms
+      operationId: RoomsList
+      parameters:
+      - default: 10
+        description: Limit the number of responses
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset the first response
+        in: query
+        name: offset
+        type: integer
+      - description: Sort results
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.RoomResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: List theater rooms
+      tags:
+      - rooms
   /theaters/{theaterID}:
     delete:
       consumes:

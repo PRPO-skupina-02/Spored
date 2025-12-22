@@ -33,13 +33,9 @@ func (t *Theater) Save(tx *gorm.DB) error {
 func GetTheaters(tx *gorm.DB, offset, limit int, sort *request.SortOptions) ([]Theater, int, error) {
 	var theaters []Theater
 
-	query := tx.Scopes(request.PaginateScope(offset, limit))
+	query := tx.Model(&Theater{}).Session(&gorm.Session{})
 
-	if sort != nil {
-		query = query.Scopes(request.SortScope(sort))
-	}
-
-	if err := query.Find(&theaters).Error; err != nil {
+	if err := query.Scopes(request.PaginateScope(offset, limit), request.SortScope(sort)).Find(&theaters).Error; err != nil {
 		return nil, 0, err
 	}
 
