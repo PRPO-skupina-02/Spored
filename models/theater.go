@@ -68,6 +68,11 @@ func DeleteTheater(tx *gorm.DB, id uuid.UUID) error {
 		return err
 	}
 
+	room := Room{TheaterID: theater.ID}
+	if err := tx.Where(&room).Delete(&room).Error; err != nil {
+		return err
+	}
+
 	if err := tx.Delete(&theater).Error; err != nil {
 		return err
 	}
