@@ -14,6 +14,8 @@ type Theater struct {
 	UpdatedAt time.Time
 
 	Name string
+
+	Rooms []Room `gorm:"foreignKey:TheaterID" json:"-"`
 }
 
 func (r *Theater) Create(tx *gorm.DB) error {
@@ -64,13 +66,15 @@ func DeleteTheater(tx *gorm.DB, id uuid.UUID) error {
 		ID: id,
 	}
 
-	if err := tx.Where(&theater).First(&theater).Error; err != nil {
+	if err := tx.Where(&theater).Preload("Rooms").First(&theater).Error; err != nil {
 		return err
 	}
 
-	room := Room{TheaterID: theater.ID}
-	if err := tx.Where(&room).Delete(&room).Error; err != nil {
-		return err
+	for _, room := range theater.Rooms {
+		err := DeleteRoom(tx, id, room.ID)
+		if err != nil {
+			return err
+		}
 	}
 
 	if err := tx.Delete(&theater).Error; err != nil {
