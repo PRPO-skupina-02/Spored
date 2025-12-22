@@ -297,6 +297,7 @@ func TestTheatersDelete(t *testing.T) {
 			assert.Equal(t, testCase.status, w.Code)
 			xtesting.AssertGoldenJSON(t, w)
 			xtesting.AssertGoldenDatabaseTable(t, db, []models.Theater{}, nil)
+			xtesting.AssertGoldenDatabaseTable(t, db, []models.Room{}, nil)
 		})
 	}
 }

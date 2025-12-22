@@ -113,26 +113,14 @@ func TheatersCreate(c *gin.Context) {
 //	@Tags			theaters
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string	true	"Theater ID"	Format(uuid)
-//	@Success		200	{object}	TheaterResponse
-//	@Failure		400	{object}	middleware.HttpError
-//	@Failure		404	{object}	middleware.HttpError
-//	@Failure		500	{object}	middleware.HttpError
-//	@Router			/theaters/{id} [get]
+//	@Param			theaterID	path		string	true	"Theater ID"	Format(uuid)
+//	@Success		200			{object}	TheaterResponse
+//	@Failure		400			{object}	middleware.HttpError
+//	@Failure		404			{object}	middleware.HttpError
+//	@Failure		500			{object}	middleware.HttpError
+//	@Router			/theaters/{theaterID} [get]
 func TheatersShow(c *gin.Context) {
-	tx := middleware.GetContextTransaction(c)
-	id, err := request.GetUUIDParam(c, "id")
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	theater, err := models.GetTheater(tx, id)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
+	theater := GetContextTheater(c)
 	c.JSON(http.StatusOK, newTheaterResponse(theater))
 }
 
@@ -144,29 +132,19 @@ func TheatersShow(c *gin.Context) {
 //	@Tags			theaters
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		string			true	"Theater ID"	Format(uuid)
-//	@Param			request	body		TheaterRequest	true	"request body"
-//	@Success		200		{object}	TheaterResponse
-//	@Failure		400		{object}	middleware.HttpError
-//	@Failure		404		{object}	middleware.HttpError
-//	@Failure		500		{object}	middleware.HttpError
-//	@Router			/theaters/{id} [put]
+//	@Param			theaterID	path		string			true	"Theater ID"	Format(uuid)
+//	@Param			request		body		TheaterRequest	true	"request body"
+//	@Success		200			{object}	TheaterResponse
+//	@Failure		400			{object}	middleware.HttpError
+//	@Failure		404			{object}	middleware.HttpError
+//	@Failure		500			{object}	middleware.HttpError
+//	@Router			/theaters/{theaterID} [put]
 func TheatersUpdate(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
-	id, err := request.GetUUIDParam(c, "id")
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
+	theater := GetContextTheater(c)
 
 	var req TheaterRequest
-	err = c.ShouldBindJSON(&req)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	theater, err := models.GetTheater(tx, id)
+	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -191,21 +169,17 @@ func TheatersUpdate(c *gin.Context) {
 //	@Tags			theaters
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path	string	true	"Theater ID"	Format(uuid)
+//	@Param			theaterID	path	string	true	"Theater ID"	Format(uuid)
 //	@Success		204
 //	@Failure		400	{object}	middleware.HttpError
 //	@Failure		404	{object}	middleware.HttpError
 //	@Failure		500	{object}	middleware.HttpError
-//	@Router			/theaters/{id} [delete]
+//	@Router			/theaters/{theaterID} [delete]
 func TheatersDelete(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
-	id, err := request.GetUUIDParam(c, "id")
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
+	theater := GetContextTheater(c)
 
-	err = models.DeleteTheater(tx, id)
+	err := models.DeleteTheater(tx, theater.ID)
 	if err != nil {
 		_ = c.Error(err)
 		return
