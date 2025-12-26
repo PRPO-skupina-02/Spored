@@ -57,10 +57,10 @@ func newRoomResponse(room models.Room) RoomResponse {
 func RoomsList(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
 	theater := GetContextTheater(c)
-	offset, limit := request.GetNormalizedPaginationArgs(c)
+	pagination := request.GetNormalizedPaginationArgs(c)
 	sort := request.GetSortOptions(c)
 
-	rooms, total, err := models.GetTheaterRooms(tx, theater.ID, offset, limit, sort)
+	rooms, total, err := models.GetTheaterRooms(tx, theater.ID, pagination, sort)
 	if err != nil {
 		_ = c.Error(err)
 		return

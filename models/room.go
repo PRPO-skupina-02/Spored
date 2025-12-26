@@ -49,12 +49,12 @@ func (ts *Room) Save(tx *gorm.DB) error {
 	return nil
 }
 
-func GetTheaterRooms(tx *gorm.DB, theaterID uuid.UUID, offset, limit int, sort *request.SortOptions) ([]Room, int, error) {
+func GetTheaterRooms(tx *gorm.DB, theaterID uuid.UUID, pagination *request.PaginationOptions, sort *request.SortOptions) ([]Room, int, error) {
 	var rooms []Room
 
 	query := tx.Model(&Room{}).Where("rooms.theater_id = ?", theaterID).Session(&gorm.Session{})
 
-	if err := query.Debug().Scopes(request.PaginateScope(offset, limit), request.SortScope(sort)).Find(&rooms).Error; err != nil {
+	if err := query.Debug().Scopes(request.PaginateScope(pagination), request.SortScope(sort)).Find(&rooms).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -72,7 +72,7 @@ func GetRoom(tx *gorm.DB, theaterID, roomID uuid.UUID) (Room, error) {
 		TheaterID: theaterID,
 	}
 
-	if err := tx.Where(&room).First(&room).Error; err != nil {
+	if err := tx.Where(&room).Preload("TimeSlots").First(&room).Error; err != nil {
 		return room, err
 	}
 

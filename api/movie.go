@@ -53,10 +53,10 @@ func newMovieResponse(movie models.Movie) MovieResponse {
 //	@Router			/movies [get]
 func MoviesList(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
-	offset, limit := request.GetNormalizedPaginationArgs(c)
+	pagination := request.GetNormalizedPaginationArgs(c)
 	sort := request.GetSortOptions(c)
 
-	movies, total, err := models.GetMovies(tx, offset, limit, sort)
+	movies, total, err := models.GetMovies(tx, pagination, sort)
 	if err != nil {
 		_ = c.Error(err)
 		return

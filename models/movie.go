@@ -48,12 +48,12 @@ func (m *Movie) Save(tx *gorm.DB) error {
 	return nil
 }
 
-func GetMovies(tx *gorm.DB, offset, limit int, sort *request.SortOptions) ([]Movie, int, error) {
+func GetMovies(tx *gorm.DB, pagination *request.PaginationOptions, sort *request.SortOptions) ([]Movie, int, error) {
 	var movies []Movie
 
 	query := tx.Model(&Movie{}).Session(&gorm.Session{})
 
-	if err := query.Scopes(request.PaginateScope(offset, limit), request.SortScope(sort)).Find(&movies).Error; err != nil {
+	if err := query.Scopes(request.PaginateScope(pagination), request.SortScope(sort)).Find(&movies).Error; err != nil {
 		return nil, 0, err
 	}
 

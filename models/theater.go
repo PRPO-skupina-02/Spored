@@ -32,12 +32,12 @@ func (t *Theater) Save(tx *gorm.DB) error {
 	return nil
 }
 
-func GetTheaters(tx *gorm.DB, offset, limit int, sort *request.SortOptions) ([]Theater, int, error) {
+func GetTheaters(tx *gorm.DB, pagination *request.PaginationOptions, sort *request.SortOptions) ([]Theater, int, error) {
 	var theaters []Theater
 
 	query := tx.Model(&Theater{}).Session(&gorm.Session{})
 
-	if err := query.Scopes(request.PaginateScope(offset, limit), request.SortScope(sort)).Find(&theaters).Error; err != nil {
+	if err := query.Scopes(request.PaginateScope(pagination), request.SortScope(sort)).Find(&theaters).Error; err != nil {
 		return nil, 0, err
 	}
 
