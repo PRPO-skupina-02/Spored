@@ -1,0 +1,9 @@
+{
+	"id": "510633ca-e23f-11f0-a626-d3b8771e2cb9",
+	"created_at": "2025-11-30T23:59:59Z",
+	"updated_at": "-- Dynamic value --",
+	"name": "TestMovie",
+	"description": "New Description",
+	"image_url": "http://example.com/image.png",
+	"rating": 7.7
+}

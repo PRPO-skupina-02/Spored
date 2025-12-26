@@ -18,6 +18,7 @@ type Room struct {
 	Columns int
 
 	TheaterID uuid.UUID
+	Theater   Theater `gorm:"foreignKey:TheaterID" json:"-"`
 }
 
 func (r *Room) Create(tx *gorm.DB) error {

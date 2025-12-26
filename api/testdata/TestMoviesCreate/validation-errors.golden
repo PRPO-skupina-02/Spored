@@ -1,0 +1,10 @@
+{
+	"code": 400,
+	"message": "validation error",
+	"fields": {
+		"description": "description must be at least 10 characters in length",
+		"image_url": "image_url must be a valid URL",
+		"rating": "rating must be 10 or less",
+		"title": "title must be at least 3 characters in length"
+	}
+}
