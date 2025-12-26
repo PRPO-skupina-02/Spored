@@ -12,6 +12,7 @@ import (
 
 const (
 	contextTheaterKey = "theater"
+	contextMovieKey   = "movie"
 )
 
 func SetContextTheater(c *gin.Context, theater models.Theater) {
@@ -19,13 +20,13 @@ func SetContextTheater(c *gin.Context, theater models.Theater) {
 }
 
 func GetContextTheater(c *gin.Context) models.Theater {
-	tx, ok := c.Get(contextTheaterKey)
+	theater, ok := c.Get(contextTheaterKey)
 	if !ok {
 		_ = c.AbortWithError(http.StatusInternalServerError, errors.New("Could not get theater from context"))
 		return models.Theater{}
 	}
 
-	return tx.(models.Theater)
+	return theater.(models.Theater)
 }
 
 func TheaterContextMiddleware(c *gin.Context) {
@@ -48,5 +49,38 @@ func TheaterContextMiddleware(c *gin.Context) {
 }
 
 func TheaterPermissionsMiddleware(c *gin.Context) {
+	c.Next()
+}
+
+func SetContextMovie(c *gin.Context, movie models.Movie) {
+	c.Set(contextMovieKey, movie)
+}
+
+func GetContextMovie(c *gin.Context) models.Movie {
+	movie, ok := c.Get(contextMovieKey)
+	if !ok {
+		_ = c.AbortWithError(http.StatusInternalServerError, errors.New("Could not get movie from context"))
+		return models.Movie{}
+	}
+
+	return movie.(models.Movie)
+}
+
+func MovieContextMiddleware(c *gin.Context) {
+	tx := middleware.GetContextTransaction(c)
+	id, err := request.GetUUIDParam(c, "movieID")
+	if err != nil {
+		_ = c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	movie, err := models.GetMovie(tx, id)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusNotFound, err)
+		return
+	}
+
+	SetContextMovie(c, movie)
+
 	c.Next()
 }

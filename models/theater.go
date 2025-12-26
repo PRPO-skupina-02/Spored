@@ -18,8 +18,8 @@ type Theater struct {
 	Rooms []Room `gorm:"foreignKey:TheaterID" json:"-"`
 }
 
-func (r *Theater) Create(tx *gorm.DB) error {
-	if err := tx.Create(r).Error; err != nil {
+func (t *Theater) Create(tx *gorm.DB) error {
+	if err := tx.Create(t).Error; err != nil {
 		return err
 	}
 	return nil

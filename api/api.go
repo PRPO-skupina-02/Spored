@@ -53,6 +53,17 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	theatersRestricted.PUT("/rooms/:roomID", RoomsUpdate)
 	theatersRestricted.DELETE("/rooms/:roomID", RoomsDelete)
 
+	// Movies
+	movies := v1.Group("/movies/:movieID")
+	movies.Use(MovieContextMiddleware)
+
+	v1.GET("/movies", MoviesList)
+	movies.GET("", MoviesShow)
+	v1.POST("/movies", MoviesCreate)
+
+	movies.PUT("", MoviesUpdate)
+	movies.DELETE("", MoviesDelete)
+
 }
 
 func healthcheck(c *gin.Context) {

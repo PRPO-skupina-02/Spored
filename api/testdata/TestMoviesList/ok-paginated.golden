@@ -1,0 +1,16 @@
+{
+	"data": [
+		{
+			"id": "510633ca-e23f-11f0-a626-d3b8771e2cb9",
+			"created_at": "2025-11-30T23:59:59Z",
+			"updated_at": "2025-11-30T23:59:59Z",
+			"name": "Spider-Man: The rise of the Hooks",
+			"description": "A thrilling story in which our beloved Spider-Man decides to give up being a superhero to become a React developer. It portrays the struggles along his journey to figure out how to properly sync data on the frontend without causing a refresh loop.",
+			"image_url": "https://image.tmdb.org/t/p/original/3lZD5CML2V1DCozC1bu4EmlAEUf.jpg",
+			"rating": 8.399999618530273
+		}
+	],
+	"offset": 1,
+	"limit": 1,
+	"total": 3
+}
