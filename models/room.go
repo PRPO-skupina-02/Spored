@@ -163,6 +163,9 @@ func (tsg *TimeSlotGap) Populate(tx *gorm.DB, movies []Movie) error {
 
 		possibleMovies := slices.Collect(func(yield func(Movie) bool) {
 			for _, movie := range movies {
+				if !movie.Active {
+					continue
+				}
 				if movie.LengthMinutes <= remainingMinutes {
 					if !yield(movie) {
 						return

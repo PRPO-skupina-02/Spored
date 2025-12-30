@@ -20,6 +20,7 @@ type MovieResponse struct {
 	ImageURL      string    `json:"image_url"`
 	Rating        float64   `json:"rating"`
 	LengthMinutes int       `json:"length_minutes"`
+	Active        bool      `json:"active"`
 }
 
 func newMovieResponse(movie models.Movie) MovieResponse {
@@ -32,6 +33,7 @@ func newMovieResponse(movie models.Movie) MovieResponse {
 		ImageURL:      movie.ImageURL,
 		Rating:        movie.Rating,
 		LengthMinutes: movie.LengthMinutes,
+		Active:        movie.Active,
 	}
 }
 
@@ -77,6 +79,7 @@ type MovieRequest struct {
 	ImageURL      string  `json:"image_url" binding:"required,url"`
 	Rating        float64 `json:"rating" binding:"required,min=0,max=10"`
 	LengthMinutes int     `json:"length_minutes" binding:"required,min=10,max=1000"`
+	Active        bool    `json:"active" binding:"boolean"`
 }
 
 // MoviesCreate
@@ -110,6 +113,7 @@ func MoviesCreate(c *gin.Context) {
 		ImageURL:      req.ImageURL,
 		Rating:        req.Rating,
 		LengthMinutes: req.LengthMinutes,
+		Active:        req.Active,
 	}
 
 	err = movie.Create(tx)
@@ -171,6 +175,7 @@ func MoviesUpdate(c *gin.Context) {
 	movie.ImageURL = req.ImageURL
 	movie.Rating = req.Rating
 	movie.LengthMinutes = req.LengthMinutes
+	movie.Active = req.Active
 
 	err = movie.Save(tx)
 	if err != nil {

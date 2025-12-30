@@ -1004,6 +1004,9 @@ const docTemplate = `{
         "api.MovieResponse": {
             "type": "object",
             "properties": {
+                "active": {
+                    "type": "boolean"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -1147,7 +1150,19 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "end_time": {
+                    "type": "string"
+                },
                 "id": {
+                    "type": "string"
+                },
+                "movie_id": {
+                    "type": "string"
+                },
+                "room_id": {
+                    "type": "string"
+                },
+                "start_time": {
                     "type": "string"
                 },
                 "updated_at": {
