@@ -32,12 +32,12 @@ func (t *Theater) Save(tx *gorm.DB) error {
 	return nil
 }
 
-func GetTheaters(tx *gorm.DB, offset, limit int, sort *request.SortOptions) ([]Theater, int, error) {
+func GetTheaters(tx *gorm.DB, pagination *request.PaginationOptions, sort *request.SortOptions) ([]Theater, int, error) {
 	var theaters []Theater
 
 	query := tx.Model(&Theater{}).Session(&gorm.Session{})
 
-	if err := query.Scopes(request.PaginateScope(offset, limit), request.SortScope(sort)).Find(&theaters).Error; err != nil {
+	if err := query.Scopes(request.PaginateScope(pagination), request.SortScope(sort)).Find(&theaters).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -80,5 +80,37 @@ func DeleteTheater(tx *gorm.DB, id uuid.UUID) error {
 	if err := tx.Delete(&theater).Error; err != nil {
 		return err
 	}
+	return nil
+}
+
+func (t *Theater) PopulateTheater(tx *gorm.DB, now time.Time, days int, movies []Movie) error {
+	rooms, _, err := GetTheaterRooms(tx, t.ID, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	for _, room := range rooms {
+		err := room.PopulateRoom(tx, now, days, movies)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (t *Theater) PruneTheater(tx *gorm.DB, before time.Time) error {
+	rooms, _, err := GetTheaterRooms(tx, t.ID, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	for _, room := range rooms {
+		err := room.PruneRoom(tx, before)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

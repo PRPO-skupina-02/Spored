@@ -2,8 +2,11 @@ package models
 
 import (
 	"math"
+	"math/rand/v2"
+	"net/http"
 	"time"
 
+	"github.com/PRPO-skupina-02/common/middleware"
 	"github.com/PRPO-skupina-02/common/request"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -14,10 +17,14 @@ type Movie struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
-	Title       string
-	Description string
-	ImageURL    string
-	Rating      float64
+	Title         string
+	Description   string
+	ImageURL      string
+	Rating        float64
+	LengthMinutes int
+	Active        bool
+
+	TimeSlots []TimeSlot `gorm:"foreignKey:MovieID" json:"-"`
 }
 
 func roundToPrecision(val float64, precision uint) float64 {
@@ -47,12 +54,12 @@ func (m *Movie) Save(tx *gorm.DB) error {
 	return nil
 }
 
-func GetMovies(tx *gorm.DB, offset, limit int, sort *request.SortOptions) ([]Movie, int, error) {
+func GetMovies(tx *gorm.DB, pagination *request.PaginationOptions, sort *request.SortOptions) ([]Movie, int, error) {
 	var movies []Movie
 
 	query := tx.Model(&Movie{}).Session(&gorm.Session{})
 
-	if err := query.Scopes(request.PaginateScope(offset, limit), request.SortScope(sort)).Find(&movies).Error; err != nil {
+	if err := query.Scopes(request.PaginateScope(pagination), request.SortScope(sort)).Find(&movies).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -81,12 +88,33 @@ func DeleteMovie(tx *gorm.DB, id uuid.UUID) error {
 		ID: id,
 	}
 
-	if err := tx.Where(&movie).First(&movie).Error; err != nil {
+	if err := tx.Where(&movie).Preload("TimeSlots").First(&movie).Error; err != nil {
 		return err
+	}
+
+	if len(movie.TimeSlots) != 0 {
+		return &middleware.HttpError{
+			Code:    http.StatusBadRequest,
+			Message: "Movie is still present in timeslots",
+		}
 	}
 
 	if err := tx.Delete(&movie).Error; err != nil {
 		return err
 	}
 	return nil
+}
+
+const breakLengthMinutes = 5
+
+func (m *Movie) CalculateEndTime(startTime time.Time) time.Time {
+	totalLength := m.LengthMinutes + breakLengthMinutes
+	roundedTo10Mins := math.Ceil(float64(totalLength)/10) * 10
+	return startTime.Add(time.Duration(roundedTo10Mins) * time.Minute)
+}
+
+func WeighedSelectMovie(movies []Movie) Movie {
+	// TODO: weigh random selection
+	selection := rand.IntN(len(movies))
+	return movies[selection]
 }
