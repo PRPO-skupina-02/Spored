@@ -3,8 +3,10 @@ package models
 import (
 	"math"
 	"math/rand/v2"
+	"net/http"
 	"time"
 
+	"github.com/PRPO-skupina-02/common/middleware"
 	"github.com/PRPO-skupina-02/common/request"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -21,6 +23,8 @@ type Movie struct {
 	Rating        float64
 	LengthMinutes int
 	Active        bool
+
+	TimeSlots []TimeSlot `gorm:"foreignKey:MovieID" json:"-"`
 }
 
 func roundToPrecision(val float64, precision uint) float64 {
@@ -84,8 +88,15 @@ func DeleteMovie(tx *gorm.DB, id uuid.UUID) error {
 		ID: id,
 	}
 
-	if err := tx.Where(&movie).First(&movie).Error; err != nil {
+	if err := tx.Where(&movie).Preload("TimeSlots").First(&movie).Error; err != nil {
 		return err
+	}
+
+	if len(movie.TimeSlots) != 0 {
+		return &middleware.HttpError{
+			Code:    http.StatusBadRequest,
+			Message: "Movie is still present in timeslots",
+		}
 	}
 
 	if err := tx.Delete(&movie).Error; err != nil {

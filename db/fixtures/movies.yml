@@ -27,3 +27,13 @@
   rating: 5.4
   length_minutes: 228
   active: true
+
+- id: 7b7a1e14-e5a0-11f0-9381-bb3b82469573
+  created_at: 2025-11-30 23:59:59
+  updated_at: 2025-11-30 23:59:59
+  title: "C++: The Musical"
+  description: std::cout << "Hello World" << std::endl
+  image_url: "https://image.tmdb.org/t/p/original/2I1ObNWQXaEJtjwvFGqmVhvW8yq.jpg"
+  rating: 3.9
+  length_minutes: 30
+  active: false

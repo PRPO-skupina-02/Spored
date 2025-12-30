@@ -296,6 +296,11 @@ func TestMoviesDelete(t *testing.T) {
 		{
 			name:   "ok",
 			status: http.StatusNoContent,
+			id:     "7b7a1e14-e5a0-11f0-9381-bb3b82469573",
+		},
+		{
+			name:   "still-used",
+			status: http.StatusBadRequest,
 			id:     "510633ca-e23f-11f0-a626-d3b8771e2cb9",
 		},
 		{
