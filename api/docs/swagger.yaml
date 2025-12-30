@@ -2,6 +2,8 @@ basePath: /api/v1
 definitions:
   api.MovieRequest:
     properties:
+      active:
+        type: boolean
       description:
         minLength: 10
         type: string

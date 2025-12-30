@@ -978,6 +978,9 @@ const docTemplate = `{
                 "title"
             ],
             "properties": {
+                "active": {
+                    "type": "boolean"
+                },
                 "description": {
                     "type": "string",
                     "minLength": 10
