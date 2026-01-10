@@ -17,7 +17,7 @@ import (
 //	@description	API za upravljanje z kinodvoranami in njihovim sporedom
 
 //	@host		localhost:8080
-//	@BasePath	/api/v1
+//	@BasePath	/api/v1/spored
 
 func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	// Healthcheck
@@ -27,7 +27,7 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// REST API
-	v1 := router.Group("/api/v1")
+	v1 := router.Group("/api/v1/spored")
 	v1.Use(middleware.TransactionMiddleware(db))
 	v1.Use(middleware.TranslationMiddleware(trans))
 	v1.Use(middleware.ErrorMiddleware)
@@ -67,7 +67,7 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	// TimeSlots
 
 	theaters.GET("/rooms/:roomID/timeslots", TimeSlotsList)
-
+	theaters.GET("/rooms/:roomID/timeslots/:timeSlotID", TimeSlotsShow)
 }
 
 func healthcheck(c *gin.Context) {

@@ -74,7 +74,7 @@ func TestRoomsList(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/theaters/%s/rooms%s", testCase.theaterID, testCase.params)
+			targetURL := fmt.Sprintf("/api/v1/spored/theaters/%s/rooms%s", testCase.theaterID, testCase.params)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()
@@ -174,7 +174,7 @@ func TestRoomsCreate(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/theaters/%s/rooms", testCase.theaterID)
+			targetURL := fmt.Sprintf("/api/v1/spored/theaters/%s/rooms", testCase.theaterID)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodPost, testCase.body)
 			assert.NoError(t, err)
@@ -262,7 +262,7 @@ func TestRoomsShow(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/theaters/%s/rooms/%s", testCase.theaterID, testCase.roomID)
+			targetURL := fmt.Sprintf("/api/v1/spored/theaters/%s/rooms/%s", testCase.theaterID, testCase.roomID)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()
@@ -425,7 +425,7 @@ func TestRoomsUpdate(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/theaters/%s/rooms/%s", testCase.theaterID, testCase.roomID)
+			targetURL := fmt.Sprintf("/api/v1/spored/theaters/%s/rooms/%s", testCase.theaterID, testCase.roomID)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodPut, testCase.body)
 			assert.NoError(t, err)
@@ -511,7 +511,7 @@ func TestRoomsDelete(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/theaters/%s/rooms/%s", testCase.theaterID, testCase.roomID)
+			targetURL := fmt.Sprintf("/api/v1/spored/theaters/%s/rooms/%s", testCase.theaterID, testCase.roomID)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodDelete, nil)
 			w := httptest.NewRecorder()

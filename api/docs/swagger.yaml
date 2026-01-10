@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /api/v1/spored
 definitions:
   api.MovieRequest:
     properties:
@@ -815,6 +815,53 @@ paths:
           schema:
             $ref: '#/definitions/middleware.HttpError'
       summary: List time slots
+      tags:
+      - timeslots
+  /theaters/{theaterID}/rooms/{roomID}/timeslots/{timeSlotID}:
+    get:
+      consumes:
+      - application/json
+      description: Show time slot
+      operationId: TimeSlotsShow
+      parameters:
+      - description: Theater ID
+        format: uuid
+        in: path
+        name: theaterID
+        required: true
+        type: string
+      - description: Room ID
+        format: uuid
+        in: path
+        name: roomID
+        required: true
+        type: string
+      - description: TimeSlot ID
+        format: uuid
+        in: path
+        name: timeSlotID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.TimeSlotResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Show time slot
       tags:
       - timeslots
 swagger: "2.0"

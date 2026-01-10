@@ -49,7 +49,7 @@ func TestMoviesList(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/movies%s", testCase.params)
+			targetURL := fmt.Sprintf("/api/v1/spored/movies%s", testCase.params)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()
@@ -105,7 +105,7 @@ func TestMoviesCreate(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := "/api/v1/movies"
+			targetURL := "/api/v1/spored/movies"
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodPost, testCase.body)
 			assert.NoError(t, err)
@@ -164,7 +164,7 @@ func TestMoviesShow(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/movies/%s", testCase.id)
+			targetURL := fmt.Sprintf("/api/v1/spored/movies/%s", testCase.id)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()
@@ -263,7 +263,7 @@ func TestMoviesUpdate(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/movies/%s", testCase.id)
+			targetURL := fmt.Sprintf("/api/v1/spored/movies/%s", testCase.id)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodPut, testCase.body)
 			assert.NoError(t, err)
@@ -325,7 +325,7 @@ func TestMoviesDelete(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/movies/%s", testCase.id)
+			targetURL := fmt.Sprintf("/api/v1/spored/movies/%s", testCase.id)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodDelete, nil)
 			w := httptest.NewRecorder()
