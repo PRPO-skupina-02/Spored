@@ -67,7 +67,7 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	// TimeSlots
 
 	theaters.GET("/rooms/:roomID/timeslots", TimeSlotsList)
-
+	theaters.GET("/rooms/:roomID/timeslots/:timeSlotID", TimeSlotsShow)
 }
 
 func healthcheck(c *gin.Context) {

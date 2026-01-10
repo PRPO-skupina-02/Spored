@@ -1,6 +1,7 @@
 package api
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/PRPO-skupina-02/common/middleware"
@@ -81,4 +82,42 @@ func TimeSlotsList(c *gin.Context) {
 	}
 
 	request.RenderPaginatedResponse(c, response, total)
+}
+
+// TimeSlotsShow
+//
+//	@Id				TimeSlotsShow
+//	@Summary		Show time slot
+//	@Description	Show time slot
+//	@Tags			timeslots
+//	@Accept			json
+//	@Produce		json
+//	@Param			theaterID	path		string	true	"Theater ID"	Format(uuid)
+//	@Param			roomID		path		string	true	"Room ID"		Format(uuid)
+//	@Param			timeSlotID		path		string	true	"TimeSlot ID"		Format(uuid)
+//	@Success		200			{object}	TimeSlotResponse
+//	@Failure		400			{object}	middleware.HttpError
+//	@Failure		404			{object}	middleware.HttpError
+//	@Failure		500			{object}	middleware.HttpError
+//	@Router			/theaters/{theaterID}/rooms/{roomID}/timeslots/{timeSlotID} [get]
+func TimeSlotsShow(c *gin.Context) {
+	tx := middleware.GetContextTransaction(c)
+	roomID, err := request.GetUUIDParam(c, "roomID")
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	timeSlotID, err := request.GetUUIDParam(c, "timeSlotID")
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	timeSlot, err := models.GetTimeSlot(tx, roomID, timeSlotID)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, newTimeSlotResponse(timeSlot))
 }
