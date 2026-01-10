@@ -17,7 +17,7 @@ import (
 //	@description	API za upravljanje z kinodvoranami in njihovim sporedom
 
 //	@host		localhost:8080
-//	@BasePath	/api/v1
+//	@BasePath	/api/v1/spored
 
 func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	// Healthcheck

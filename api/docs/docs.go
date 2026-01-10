@@ -965,6 +965,74 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/theaters/{theaterID}/rooms/{roomID}/timeslots/{timeSlotID}": {
+            "get": {
+                "description": "Show time slot",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "timeslots"
+                ],
+                "summary": "Show time slot",
+                "operationId": "TimeSlotsShow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Theater ID",
+                        "name": "theaterID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Room ID",
+                        "name": "roomID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "TimeSlot ID",
+                        "name": "timeSlotID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.TimeSlotResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.HttpError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1212,7 +1280,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	BasePath:         "/api/v1/spored",
 	Schemes:          []string{},
 	Title:            "Spored API",
 	Description:      "API za upravljanje z kinodvoranami in njihovim sporedom",

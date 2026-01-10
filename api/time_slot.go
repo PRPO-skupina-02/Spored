@@ -94,7 +94,7 @@ func TimeSlotsList(c *gin.Context) {
 //	@Produce		json
 //	@Param			theaterID	path		string	true	"Theater ID"	Format(uuid)
 //	@Param			roomID		path		string	true	"Room ID"		Format(uuid)
-//	@Param			timeSlotID		path		string	true	"TimeSlot ID"		Format(uuid)
+//	@Param			timeSlotID	path		string	true	"TimeSlot ID"	Format(uuid)
 //	@Success		200			{object}	TimeSlotResponse
 //	@Failure		400			{object}	middleware.HttpError
 //	@Failure		404			{object}	middleware.HttpError
