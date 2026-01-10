@@ -93,7 +93,7 @@ func TestTimeSlotsList(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/theaters/%s/rooms/%s/timeslots%s", testCase.theaterID, testCase.roomID, testCase.params)
+			targetURL := fmt.Sprintf("/api/v1/spored/theaters/%s/rooms/%s/timeslots%s", testCase.theaterID, testCase.roomID, testCase.params)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()
@@ -194,7 +194,7 @@ func TestTimeSlotsShow(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/theaters/%s/rooms/%s/timeslots/%s", testCase.theaterID, testCase.roomID, testCase.timeSlotID)
+			targetURL := fmt.Sprintf("/api/v1/spored/theaters/%s/rooms/%s/timeslots/%s", testCase.theaterID, testCase.roomID, testCase.timeSlotID)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()

@@ -27,7 +27,7 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// REST API
-	v1 := router.Group("/api/v1")
+	v1 := router.Group("/api/v1/spored")
 	v1.Use(middleware.TransactionMiddleware(db))
 	v1.Use(middleware.TranslationMiddleware(trans))
 	v1.Use(middleware.ErrorMiddleware)
