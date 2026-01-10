@@ -11,14 +11,16 @@ services:
       - spored-pgdata:/var/lib/postgresql/data 
     ports:
       - 5432:5432
-    networks:
-      - cinecore-net
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 3s
+      timeout: 10s
+      retries: 5
+
 
   spored:
     ports:
       - "8080:8080"
-    networks:
-      - cinecore-net
     build: .
     depends_on:
       - db
@@ -31,11 +33,6 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DATABASE_NAME=spored
       - POSTGRES_TEST_DATABASE_NAME=spored_test
-
-networks:
-  cinecore-net:
-    name: cinecore-net
-    driver: bridge
 
 volumes:
   spored-pgdata:
